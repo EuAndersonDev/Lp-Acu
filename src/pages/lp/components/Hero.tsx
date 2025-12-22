@@ -9,7 +9,7 @@ export default function Hero() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="inline-block bg-orange-500 text-white px-4 py-2 rounded-full text-sm font-semibold mb-6">
-              Há a anos no mercado
+              Há anos no mercado
             </div>
 
             <h2 className="text-4xl lg:text-6xl font-bold mb-6 leading-tight">

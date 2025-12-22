@@ -14,7 +14,7 @@ export default function Footer() {
               </div>
             </div>
             <p className="text-blue-200 text-sm leading-relaxed">
-              Há a anos oferecendo os melhores materiais de construção
+              Há anos oferecendo os melhores materiais de construção
               para sua obra.
             </p>
           </div>
@@ -63,7 +63,7 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-blue-800 pt-8 text-center text-blue-300 text-sm">
-          <p>&copy; 2024 ConstrutorPro. Todos os direitos reservados.</p>
+          <p>&copy; 2024 Açu Materiais. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
