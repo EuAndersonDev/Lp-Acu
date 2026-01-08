@@ -11,7 +11,7 @@ export type LoginPayload = {
 
 // Futuras integrações com API podem substituir esses stubs.
 export async function registerUser(payload: RegisterPayload) {
-  const res = await fetch('http://localhost:3000/api/auth/register', {
+  const res = await fetch(`${import('../config/env').then(m => m.CONFIG.API_BASE_URL)}/api/auth/register`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -21,9 +21,10 @@ export async function registerUser(payload: RegisterPayload) {
 }
 
 import { getAuthData } from './storage';
+import { CONFIG } from '../config/env';
 
 export async function loginUser(payload: LoginPayload): Promise<{ success: boolean; token?: string }> {
-  const res = await fetch('http://localhost:3000/api/auth/login', {
+  const res = await fetch(`${CONFIG.API_BASE_URL}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -38,7 +39,7 @@ export async function fetchMe(token?: string): Promise<{ success: boolean; user?
   // Busca dados do usuário autenticado via /me usando Bearer token
   const tkn = token ?? getAuthData()?.token;
   if (!tkn) return { success: false };
-  const res = await fetch('http://localhost:3000/api/auth/me', {
+  const res = await fetch(`${CONFIG.API_BASE_URL}/api/me`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
