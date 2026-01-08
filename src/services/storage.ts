@@ -12,6 +12,9 @@ export function setAuthData(data: AuthData) {
     if (data.user !== undefined) {
       localStorage.setItem(USER_KEY, JSON.stringify(data.user));
     }
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:updated'));
+    }
   } catch (err) {
     console.error('setAuthData error:', err);
   }
@@ -34,6 +37,9 @@ export function clearAuthData() {
   try {
     localStorage.removeItem(TOKEN_KEY);
     localStorage.removeItem(USER_KEY);
+    if (typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('auth:updated'));
+    }
   } catch (err) {
     console.error('clearAuthData error:', err);
   }
