@@ -9,7 +9,7 @@ import SwitchAuthLink from '../auth/components/SwitchAuthLink';
 import { swal } from '../../lib/swal';
 import { useNavigate } from 'react-router-dom';
 import { loginUser, fetchMe } from '../../services/auth';
-import { setAuthData } from '../../services/storage';
+import { setTokens } from '../../services/storage';
 
 export default function Login() {
 	const [email, setEmail] = useState('');
@@ -28,7 +28,7 @@ export default function Login() {
 
 		// Handler preparado para API: login -> fetchMe -> persistir -> navegar
 		const loginRes = await loginUser({ email, password });
-		if (!loginRes.success || !loginRes.token) {
+		if (!loginRes.success || !loginRes.accessToken || !loginRes.refreshToken) {
 			// Alerts específicos baseado no tipo de erro
 			let alertMessage = 'Tente novamente mais tarde.';
 			let alertTitle = 'Erro no login';
@@ -68,9 +68,9 @@ export default function Login() {
 			return;
 		}
 
-		const meRes = await fetchMe(loginRes.token);
+		const meRes = await fetchMe();
 		if (meRes.success && meRes.user) {
-			setAuthData({ token: loginRes.token, user: meRes.user });
+			setTokens(loginRes.accessToken!, loginRes.refreshToken!, meRes.user);
 		}
 
 		await swal.fire({

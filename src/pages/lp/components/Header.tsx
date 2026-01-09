@@ -1,23 +1,12 @@
-import {  Phone, Menu, X, User } from 'lucide-react';
+import { Phone, Menu, X, User } from 'lucide-react';
 import { useState } from 'react';
 import { FaHouseChimney } from "react-icons/fa6";
 import { Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import { getAuthData } from '../../../services/storage';
+import { useAuth } from '../../../hooks/useAuth';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
-
-  useEffect(() => {
-    const updateAuth = () => {
-      const data = getAuthData();
-      setIsLoggedIn(!!data?.token);
-    };
-    updateAuth();
-    window.addEventListener('auth:updated', updateAuth);
-    return () => window.removeEventListener('auth:updated', updateAuth);
-  }, []);
+  const { isAuthenticated, user, isLoading } = useAuth();
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
@@ -48,12 +37,11 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               Fale Conosco
             </a>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <Link
-                to="/"
-                aria-label="Perfil"
-                className="bg-blue-900 text-white p-2 rounded-full hover:bg-blue-800 transition flex items-center justify-center"
-                title="Perfil"
+                to="/profile"
+                className="bg-blue-900 text-white p-2.5 rounded-full hover:bg-blue-800 hover:scale-110 transition-all duration-200"
+                title={`Perfil - ${user?.name}`}
               >
                 <User className="w-5 h-5" />
               </Link>
@@ -105,13 +93,12 @@ export default function Header() {
               <Phone className="w-4 h-4" />
               Fale Conosco
             </a>
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <Link
-                to="/"
-                aria-label="Perfil"
-                className="flex items-center justify-center bg-blue-900 text-white p-2 rounded-full hover:bg-blue-800 transition"
+                to="/profile"
+                className="bg-blue-900 text-white p-2.5 rounded-full hover:bg-blue-800 hover:scale-110 transition-all duration-200"
                 onClick={() => setIsMenuOpen(false)}
-                title="Perfil"
+                title={`Perfil - ${user?.name}`}
               >
                 <User className="w-5 h-5" />
               </Link>
