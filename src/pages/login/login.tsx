@@ -29,9 +29,39 @@ export default function Login() {
 		// Handler preparado para API: login -> fetchMe -> persistir -> navegar
 		const loginRes = await loginUser({ email, password });
 		if (!loginRes.success || !loginRes.token) {
+			// Alerts específicos baseado no tipo de erro
+			let alertMessage = 'Tente novamente mais tarde.';
+			let alertTitle = 'Erro no login';
+
+			switch (loginRes.errorType) {
+				case 'user_not_found':
+					alertTitle = 'Usuário não encontrado';
+					alertMessage = 'Nenhuma conta foi encontrada com este email. Deseja criar uma?';
+					break;
+				case 'password_invalid':
+					alertTitle = 'Senha inválida';
+					alertMessage = 'A senha está incorreta. Verifique e tente novamente.';
+					break;
+				case 'invalid_credentials':
+					alertTitle = 'Credenciais inválidas';
+					alertMessage = 'Email ou senha incorretos. Tente novamente.';
+					break;
+				case 'missing_fields':
+					alertTitle = 'Campos obrigatórios';
+					alertMessage = 'Por favor, preencha email e senha.';
+					break;
+				case 'server_error':
+					alertTitle = 'Erro do servidor';
+					alertMessage = 'Ocorreu um erro no servidor. Tente novamente em alguns instantes.';
+					break;
+				default:
+					alertTitle = 'Erro ao conectar';
+					alertMessage = 'Não foi possível conectar. Verifique sua conexão e tente novamente.';
+			}
+
 			await swal.fire({
-				title: 'Erro no login',
-				text: 'Tente novamente mais tarde.',
+				title: alertTitle,
+				text: alertMessage,
 				icon: 'error',
 				confirmButtonText: 'Ok',
 			});
@@ -44,7 +74,7 @@ export default function Login() {
 		}
 
 		await swal.fire({
-			title: 'Login enviado',
+			title: 'Login bem-sucedido',
 			text: 'Você será redirecionado em breve.',
 			icon: 'success',
 			confirmButtonText: 'Entrar',

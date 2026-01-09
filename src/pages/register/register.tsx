@@ -39,16 +39,38 @@ export default function Register() {
     const result = await registerUser({ name, email, password });
     if (result.success) {
       await swal.fire({
-        title: 'Registro enviado',
-        text: 'Conta criada com sucesso (demo).',
+        title: 'Conta criada!',
+        text: 'Seu cadastro foi realizado com sucesso. Faça login para continuar.',
         icon: 'success',
         confirmButtonText: 'Ir para login',
       });
       navigate('/login');
     } else {
+      // Alerts específicos baseado no tipo de erro
+      let alertMessage = 'Tente novamente mais tarde.';
+      let alertTitle = 'Erro no cadastro';
+
+      switch (result.errorType) {
+        case 'user_exists':
+          alertTitle = 'Email já cadastrado';
+          alertMessage = 'Este email já está em uso. Faça login ou use outro email.';
+          break;
+        case 'missing_fields':
+          alertTitle = 'Campos obrigatórios';
+          alertMessage = 'Por favor, preencha todos os campos obrigatórios.';
+          break;
+        case 'server_error':
+          alertTitle = 'Erro no servidor';
+          alertMessage = 'Ocorreu um problema no servidor. Tente novamente em alguns instantes.';
+          break;
+        default:
+          alertTitle = 'Erro ao cadastrar';
+          alertMessage = 'Não foi possível completar o cadastro. Verifique sua conexão e tente novamente.';
+      }
+
       await swal.fire({
-        title: 'Erro no registro',
-        text: 'Tente novamente mais tarde.',
+        title: alertTitle,
+        text: alertMessage,
         icon: 'error',
         confirmButtonText: 'Ok',
       });
