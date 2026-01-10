@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AuthLayout from '../auth/AuthLayout';
 import AuthTitle from '../auth/components/AuthTitle';
 import ErrorAlert from '../auth/components/ErrorAlert';
@@ -16,7 +16,15 @@ export default function Register() {
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [countdown, setCountdown] = useState(0);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (countdown > 0) {
+      const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [countdown]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,8 +43,27 @@ export default function Register() {
       return;
     }
 
-    // Handler preparado para API
-    const result = await registerUser({ name, email, password });
+    // Iniciar countdown
+    setCountdown(5);
+
+    // Mostrar alerta de espera (sem await)
+    swal.fire({
+      title: 'Aguarde',
+      html: 'Processando seu cadastro...',
+      icon: 'info',
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      showConfirmButton: false,
+    });
+
+    // Esperar a requisição E no mínimo 2 segundos
+    const [result] = await Promise.all([
+      registerUser({ name, email, password }),
+      new Promise(resolve => setTimeout(resolve, 2000))
+    ]);
+    
+    // Fechar alert de espera
+    swal.close();
     if (result.success) {
       await swal.fire({
         title: 'Conta criada!',
@@ -89,6 +116,7 @@ export default function Register() {
             onChange={setName}
             placeholder="Seu nome"
             autoComplete="name"
+            disabled={countdown > 0}
           />
           <TextInput
             label="Email"
@@ -97,18 +125,21 @@ export default function Register() {
             onChange={setEmail}
             placeholder="seuemail@exemplo.com"
             autoComplete="email"
+            disabled={countdown > 0}
           />
           <PasswordInput
             label="Senha"
             value={password}
             onChange={setPassword}
+            disabled={countdown > 0}
           />
           <PasswordInput
             label="Confirmar senha"
             value={confirm}
             onChange={setConfirm}
+            disabled={countdown > 0}
           />
-          <SubmitButton label="Criar conta" />
+          <SubmitButton label="Criar conta" countdown={countdown} />
         </form>
         <SwitchAuthLink to="/login" textBefore="Já tem conta?" linkText="Entrar" />
       </div>

@@ -1,59 +1,73 @@
-import { Phone, Menu, X, User } from 'lucide-react';
+import { Phone, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import { FaHouseChimney } from "react-icons/fa6";
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../../../hooks/useAuth';
+import ProfileDropdown from '../../../components/shared/ProfileDropdown';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isAuthenticated, user, isLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+  const isLandingPage = location.pathname === '/';
 
   return (
     <header className="bg-white shadow-md sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center py-4">
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2 hover:opacity-80 transition">
             <FaHouseChimney className="w-8 h-8 text-orange-500" />
             <div>
               <h1 className="text-2xl font-bold text-blue-900">Açu</h1>
               <p className="text-xs text-gray-600">Materiais de Construção</p>
             </div>
-          </div>
+          </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
-            <a href="#produtos" className="text-gray-700 hover:text-orange-500 transition">
-              Produtos
-            </a>
-            <a href="#beneficios" className="text-gray-700 hover:text-orange-500 transition">
-              Benefícios
-            </a>
-            <a href="#contato" className="text-gray-700 hover:text-orange-500 transition">
-              Contato
-            </a>
-            <a
-              href="https://linktr.ee/AcuMateriais"
-              className="flex items-center gap-2 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition"
-            >
-              <Phone className="w-4 h-4" />
-              Fale Conosco
-            </a>
-            {isAuthenticated ? (
-              <Link
-                to="/profile"
-                className="bg-blue-900 text-white p-2.5 rounded-full hover:bg-blue-800 hover:scale-110 transition-all duration-200"
-                title={`Perfil - ${user?.name}`}
+          {isLandingPage && (
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#produtos" className="text-gray-700 hover:text-orange-500 transition">
+                Produtos
+              </a>
+              <a href="#beneficios" className="text-gray-700 hover:text-orange-500 transition">
+                Benefícios
+              </a>
+              <a href="#contato" className="text-gray-700 hover:text-orange-500 transition">
+                Contato
+              </a>
+              <a
+                href="https://linktr.ee/AcuMateriais"
+                className="flex items-center gap-2 bg-orange-500 text-white px-6 py-2 rounded-lg hover:bg-orange-600 transition"
               >
-                <User className="w-5 h-5" />
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="flex items-center gap-2 bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition"
-              >
-                Entrar
-              </Link>
-            )}
-          </nav>
+                <Phone className="w-4 h-4" />
+                Fale Conosco
+              </a>
+              {isAuthenticated ? (
+                <ProfileDropdown />
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition"
+                >
+                  Entrar
+                </Link>
+              )}
+            </nav>
+          )}
+
+          {!isLandingPage && (
+            <nav className="hidden md:flex items-center gap-4">
+              {isAuthenticated ? (
+                <ProfileDropdown />
+              ) : (
+                <Link
+                  to="/login"
+                  className="flex items-center gap-2 bg-blue-900 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition"
+                >
+                  Entrar
+                </Link>
+              )}
+            </nav>
+          )}
 
           <button
             className="md:hidden text-gray-700"
@@ -63,7 +77,7 @@ export default function Header() {
           </button>
         </div>
 
-        {isMenuOpen && (
+        {isMenuOpen && isLandingPage && (
           <nav className="md:hidden pb-4 flex flex-col gap-4">
             <a
               href="#produtos"
@@ -94,14 +108,7 @@ export default function Header() {
               Fale Conosco
             </a>
             {isAuthenticated ? (
-              <Link
-                to="/profile"
-                className="bg-blue-900 text-white p-2.5 rounded-full hover:bg-blue-800 hover:scale-110 transition-all duration-200"
-                onClick={() => setIsMenuOpen(false)}
-                title={`Perfil - ${user?.name}`}
-              >
-                <User className="w-5 h-5" />
-              </Link>
+              <ProfileDropdown />
             ) : (
               <Link
                 to="/login"

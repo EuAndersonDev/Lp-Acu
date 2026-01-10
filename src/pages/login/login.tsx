@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AuthLayout from '../auth/AuthLayout';
 import AuthTitle from '../auth/components/AuthTitle';
 import ErrorAlert from '../auth/components/ErrorAlert';
@@ -15,7 +15,15 @@ export default function Login() {
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
 	const [error, setError] = useState<string | null>(null);
-  const navigate = useNavigate();
+	const [countdown, setCountdown] = useState(0);
+	const navigate = useNavigate();
+
+	useEffect(() => {
+		if (countdown > 0) {
+			const timer = setTimeout(() => setCountdown(countdown - 1), 1000);
+			return () => clearTimeout(timer);
+		}
+	}, [countdown]);
 
 	async function handleSubmit(e: React.FormEvent) {
 		e.preventDefault();
@@ -26,8 +34,27 @@ export default function Login() {
 			return;
 		}
 
-		// Handler preparado para API: login -> fetchMe -> persistir -> navegar
-		const loginRes = await loginUser({ email, password });
+		// Iniciar countdown
+		setCountdown(5);
+
+		// Mostrar alerta de espera (sem await)
+		swal.fire({
+			title: 'Aguarde',
+			html: 'Processando sua requisição...',
+			icon: 'info',
+			allowOutsideClick: false,
+			allowEscapeKey: false,
+			showConfirmButton: false,
+		});
+
+		// Esperar a requisição E no mínimo 2 segundos
+		const [loginRes] = await Promise.all([
+			loginUser({ email, password }),
+			new Promise(resolve => setTimeout(resolve, 2000))
+		]);
+		
+		// Fechar alert de espera
+		swal.close();
 		if (!loginRes.success || !loginRes.accessToken || !loginRes.refreshToken) {
 			// Alerts específicos baseado no tipo de erro
 			let alertMessage = 'Tente novamente mais tarde.';
@@ -95,13 +122,15 @@ export default function Login() {
 						onChange={setEmail}
 						placeholder="seuemail@exemplo.com"
 						autoComplete="email"
+						disabled={countdown > 0}
 					/>
 					<PasswordInput
 						label="Senha"
 						value={password}
 						onChange={setPassword}
+						disabled={countdown > 0}
 					/>
-					<SubmitButton label="Entrar" />
+					<SubmitButton label="Entrar" countdown={countdown} />
 				</form>
 				<SwitchAuthLink to="/register" textBefore="Não tem conta?" linkText="Registre-se" />
 			</div>

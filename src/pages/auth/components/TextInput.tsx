@@ -7,6 +7,7 @@ type Props = {
   onChange: (value: string) => void;
   placeholder?: string;
   autoComplete?: string;
+  disabled?: boolean;
 };
 
 export default function TextInput({
@@ -16,6 +17,7 @@ export default function TextInput({
   onChange,
   placeholder,
   autoComplete,
+  disabled = false,
 }: Props) {
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
     onChange(e.target.value);
@@ -30,7 +32,8 @@ export default function TextInput({
         onChange={handleChange}
         placeholder={placeholder}
         autoComplete={autoComplete}
-        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500"
+        disabled={disabled}
+        className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-orange-500 disabled:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-50"
       />
     </div>
   );
