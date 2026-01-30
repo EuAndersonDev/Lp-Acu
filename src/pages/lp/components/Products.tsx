@@ -1,88 +1,175 @@
-import { Box, Hammer, Wrench, Package, Droplet, Zap } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-const products = [
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  imageUrl: string;
+  installments?: string;
+  freeShipping?: boolean;
+}
+
+const MOCK_PRODUCTS: Product[] = [
   {
-    icon: Box,
-    title: 'Cimento e Argamassa',
-    description: 'Cimentos de alta resistência e argamassas para todo tipo de aplicação',
-    color: 'bg-blue-500',
+    id: '1',
+    name: 'Cimento CP II - 50kg - Votoran Todas as Obras',
+    price: 34.90,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Cimento',
+    installments: '3x R$ 11,63 sem juros',
   },
   {
-    icon: Hammer,
-    title: 'Ferramentas',
-    description: 'Ferramentas profissionais e acessórios para construção',
-    color: 'bg-orange-500',
+    id: '2',
+    name: 'Areia Média Lavada - Saco 20kg para Construção',
+    price: 8.50,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Areia',
   },
   {
-    icon: Wrench,
-    title: 'Hidráulica',
-    description: 'Tubos, conexões, registros e todo material hidráulico',
-    color: 'bg-blue-600',
+    id: '3',
+    name: 'Kit Ferramentas 12 Peças Profissional Maleta Completa',
+    price: 129.90,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Ferramentas',
+    installments: '12x R$ 10,82',
+    freeShipping: true,
   },
   {
-    icon: Zap,
-    title: 'Elétrica',
-    description: 'Materiais elétricos, fios, cabos e iluminação',
-    color: 'bg-orange-600',
+    id: '4',
+    name: 'Tinta Acrílica Fosca Branco Neve 18L Suvinil',
+    price: 389.90,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Tinta',
+    installments: '10x R$ 38,99 sem juros',
+    freeShipping: true,
   },
   {
-    icon: Droplet,
-    title: 'Tintas e Texturas',
-    description: 'Tintas premium, texturas e produtos para acabamento',
-    color: 'bg-blue-700',
+    id: '5',
+    name: 'Bloco Cerâmico 9x19x29 de Vedação (Milheiro)',
+    price: 1850.00,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Bloco',
+    installments: '12x R$ 154,16',
   },
   {
-    icon: Package,
-    title: 'Acabamentos',
-    description: 'Pisos, revestimentos, louças e metais sanitários',
-    color: 'bg-orange-400',
+    id: '6',
+    name: 'Argamassa ACIII Branca 20kg Colante',
+    price: 42.90,
+    imageUrl: 'https://placehold.co/300x300/white/1e293b?text=Argamassa',
   },
 ];
 
 export default function Products() {
+  const [products, setProducts] = useState<Product[]>([]);
+  const navigate = useNavigate();
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setProducts(MOCK_PRODUCTS);
+  }, []);
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (carouselRef.current) {
+      const { current } = carouselRef;
+      const scrollAmount = current.clientWidth * 0.8;
+      
+      if (direction === 'left') {
+        current.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+      } else {
+        current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+      }
+    }
+  };
+
   return (
-    <section id="produtos" className="py-20 bg-gray-50">
+    <section id="produtos" className="py-16 bg-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-blue-900 mb-4">
-            Nossos Produtos
+        <div className="flex items-center gap-4 mb-6">
+          <h2 className="text-2xl font-light text-gray-600">
+            Ofertas em destaque
           </h2>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Oferecemos uma linha completa de materiais de construção para sua obra
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {products.map((product, index) => {
-            const Icon = product.icon;
-            return (
-              <div
-                key={index}
-                className="bg-white rounded-xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 hover:-translate-y-1 group"
-              >
-                <div
-                  className={`${product.color} w-16 h-16 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}
-                >
-                  <Icon className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-3">
-                  {product.title}
-                </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {product.description}
-                </p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div className="mt-16 text-center">
-          <a
-            href="https://wa.me/5511952815167"
-            className="inline-block bg-orange-500 text-white px-8 py-4 rounded-lg hover:bg-orange-600 transition font-semibold text-lg"
+          <div className="h-px bg-gray-300 flex-1"></div>
+          <button 
+            onClick={() => navigate('/products')}
+            className="text-sm text-blue-600 hover:text-blue-700 font-medium"
           >
-            Solicitar Catálogo Completo
-          </a>
+            Ver tudo
+          </button>
+        </div>
+
+        <div className="relative group/carousel">
+          <button
+            onClick={() => scroll('left')}
+            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 bg-white text-blue-900 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-gray-50 focus:outline-none hidden md:block"
+            aria-label="Anterior"
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <div 
+            ref={carouselRef}
+            className="flex overflow-x-auto gap-4 pb-4 snap-x snap-mandatory scrollbar-hide"
+            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+          >
+          {products.map((product) => (
+            <div
+              key={product.id}
+              onClick={() => navigate(`/products/${product.id}`)}
+              className="min-w-[280px] max-w-[280px] sm:min-w-[260px] sm:max-w-[260px] flex-shrink-0 snap-start bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer group border border-gray-100 overflow-hidden"
+            >
+              <div className="aspect-square w-full relative border-b border-gray-50">
+                <img
+                  src={product.imageUrl}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-4 group-hover:opacity-95 transition-opacity"
+                />
+              </div>
+              
+              <div className="p-4">
+                <div className="flex items-start gap-2 mb-2">
+                  <span className="text-2xl font-normal text-gray-900">
+                    R$ {product.price.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
+                  </span>
+                  {product.freeShipping && (
+                     <span className="text-[10px] font-bold text-green-600 bg-green-50 px-1.5 py-0.5 rounded ml-auto">
+                       ON
+                     </span>
+                  )}
+                </div>
+
+                {product.installments && (
+                  <p className="text-xs text-green-600 font-medium mb-2">
+                    em {product.installments}
+                  </p>
+                )}
+
+                {product.freeShipping && (
+                  <p className="text-xs font-bold text-green-600 mb-2">
+                    Frete grátis
+                  </p>
+                )}
+
+                <h3 className="text-sm text-gray-600 font-light line-clamp-2 group-hover:text-blue-600 transition-colors">
+                  {product.name}
+                </h3>
+              </div>
+            </div>
+          ))}
+          </div>
+
+          <button
+            onClick={() => scroll('right')}
+            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 bg-white text-blue-900 p-3 rounded-full shadow-lg opacity-0 group-hover/carousel:opacity-100 transition-all duration-300 hover:bg-gray-50 focus:outline-none hidden md:block"
+            aria-label="Próximo"
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="mt-8 text-center">
+           <button
+            onClick={() => navigate('/products')}
+            className="inline-block bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition font-medium shadow-md shadow-blue-500/20"
+          >
+            Ver todas as ofertas
+          </button>
         </div>
       </div>
     </section>
