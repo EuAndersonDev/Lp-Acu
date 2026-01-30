@@ -165,7 +165,7 @@ export default function Products() {
 
         <div className="mt-8 text-center">
            <button
-            onClick={() => navigate('/products')}
+            onClick={() => navigate('/catalog')}
             className="inline-block bg-blue-600 text-white px-8 py-3 rounded-md hover:bg-blue-700 transition font-medium shadow-md shadow-blue-500/20"
           >
             Ver todas as ofertas
