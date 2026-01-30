@@ -3,7 +3,7 @@ import LP from '../pages/lp/lp';
 import Login from '../pages/login/login';
 import Register from '../pages/register/register';
 import ProductPage from '../pages/productsPage/productsPage';
-import Catalog from '../pages/catalog/Catalog';
+import Catalog from '../pages/catalog/catalog';
 
 export function AppRoutes() {
   return (
