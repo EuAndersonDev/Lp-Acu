@@ -10,7 +10,7 @@ export default function Footer() {
               <HardHat className="w-8 h-8 text-orange-400" />
               <div>
                 <h3 className="text-xl font-bold">Açu</h3>
-                <p className="text-xs text-blue-300">Materiais de Construção</p>
+                <p className="text-xs text-blue-300">Materiais de Construcao</p>
               </div>
             </div>
             <p className="text-blue-200 text-sm leading-relaxed">

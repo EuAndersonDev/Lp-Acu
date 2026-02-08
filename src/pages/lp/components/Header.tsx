@@ -19,7 +19,7 @@ export default function Header() {
             <FaHouseChimney className="w-8 h-8 text-orange-500" />
             <div>
               <h1 className="text-2xl font-bold text-blue-900">Açu</h1>
-              <p className="text-xs text-gray-600">Materiais de Construção</p>
+              <p className="text-xs text-gray-600">Materiais de Construcao</p>
             </div>
           </Link>
 

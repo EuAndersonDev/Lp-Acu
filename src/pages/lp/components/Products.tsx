@@ -111,7 +111,7 @@ export default function Products() {
           {products.map((product) => (
             <div
               key={product.id}
-              onClick={() => navigate(`/productsPage/${product.id}`)}
+              onClick={() => navigate(`/productPage/${product.id}`)}
               className="min-w-[280px] max-w-[280px] sm:min-w-[260px] sm:max-w-[260px] flex-shrink-0 snap-start bg-white rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 cursor-pointer group border border-gray-100 overflow-hidden"
             >
               <div className="aspect-square w-full relative border-b border-gray-50">
